@@ -1,0 +1,30 @@
+# Changelog
+
+## 1.0.0
+
+### Cursor effects
+- New addon: cursor effects for WoW Forever, each off until you turn it on in /fec.
+- Cursor trail: smooth, evenly spaced dots that fade behind the cursor, with spacing, lifetime, most dots, size, opacity and offsets.
+- Only in combat, for the trail.
+- Trail extras: glow, shrink as it fades, and dots turned along the path.
+- Trail colours: your class, one colour, a rainbow, or a gradient of up to ten colours, with colours in use, phases and colour speed.
+- Cursor ring, with opacity and class, custom or the trail's colour.
+- Cast progress ring round the cursor, with the same choices.
+- Cursor highlight while looking: a see-through pointer marks where the cursor comes back while you turn or move the camera.
+- A live preview at the top of the Trail, Colours and Rings pages, with the game's own pointer.
+
+### Profiles
+- Profiles: new, copy, rename, delete and switch, in combat too.
+- Account-wide: one profile for every character, new ones too.
+- Share a profile as text, and import one as a new profile or over yours.
+- With EraUI loaded: copy its cursor settings into a profile, offered once.
+- Auto-switch (off at first): a profile for combat, out of combat, mounted, a mount you list (Needs testing), open world, dungeon or raid, battleground or arena, and each talent group.
+
+### Settings
+- /fec opens the settings, also under Options > AddOns. Hover anything and the footer says what it does.
+- A colour picker of its own: each colour shows at once, and Cancel puts the old one back.
+- A tour of the window, offered on a first install and on the General page.
+- A minimap button: click for the settings, right-click for What's new.
+- Found a bug or have an idea? The Discord button on the General page, or /fec discord.
+- Reset on the General page, or /fec reset: this profile or everything back to the defaults, asked first.
+- More from Squirt on the General page: Forever Enhanced Cooldown Manager, with screenshots, and Forever Enhanced Raid Frames coming soon.

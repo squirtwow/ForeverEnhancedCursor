@@ -1,0 +1,34 @@
+## Interface: 16001
+## Title: Forever Enhanced Cursor
+## Notes: A smooth cursor trail, a cursor ring, a cast progress ring and a cursor highlight while looking, with profiles, for WoW Forever.
+## Author: Squirt
+## Version: 1.0.0
+## SavedVariables: ForeverEnhancedCursorDB
+## IconTexture: Interface\AddOns\ForeverEnhancedCursor\Media\FECIcon.tga
+## Category: UI
+## OptionalDeps: EraUI
+
+Core.lua
+Style.lua
+FromEraUI.lua
+State.lua
+Trail.lua
+Engine.lua
+Cast.lua
+AutoSwitch.lua
+API.lua
+Theme.lua
+PageParts.lua
+ColourPicker.lua
+Preview.lua
+TrailPage.lua
+ColoursPage.lua
+RingsPage.lua
+ProfileTools.lua
+ProfilesPage.lua
+AutoSwitchPage.lua
+ProfileMenu.lua
+Window.lua
+Tour.lua
+MinimapButton.lua
+Notes.lua

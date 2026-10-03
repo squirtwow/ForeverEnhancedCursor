@@ -1,0 +1,8 @@
+package-as: ForeverEnhancedCursor
+
+manual-changelog: CHANGELOG.txt
+
+ignore:
+  - .github
+  - Screenshots
+  - Tools
