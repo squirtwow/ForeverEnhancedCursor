@@ -2,7 +2,7 @@
 ## Title: Forever Enhanced Cursor
 ## Notes: A smooth cursor trail, a cursor ring, a cast progress ring and a cursor highlight while looking, with profiles, for WoW Forever.
 ## Author: Squirt
-## Version: 1.0.0
+## Version: @project-version@
 ## SavedVariables: ForeverEnhancedCursorDB
 ## IconTexture: Interface\AddOns\ForeverEnhancedCursor\Media\FECIcon.tga
 ## Category: UI

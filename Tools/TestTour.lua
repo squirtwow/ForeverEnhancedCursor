@@ -344,10 +344,9 @@ end
     end)
 end)()
 
--- The released copy (1.0.0, uploaded by hand, with no packager): the game
--- reads the TOC's own number (Tools/TestRules.mjs checks the TOC says 1.0.0,
--- the newest in CHANGELOG.txt), and What's new, the footer and What's new's
--- tour go by it. A tester's copy from before had no number ("dev").
+-- A released copy (1.0.0 here): the packager writes the tag into the TOC, the
+-- game reads it, and What's new, the footer and What's new's tour go by it. A
+-- tester's copy straight from the source has no number ("dev").
 do
     H.Environment()
     local number = "1.0.0"

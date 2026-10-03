@@ -290,12 +290,9 @@ test('the TOC loads every file, for Forever, by Squirt', async () => {
   assert.match(toc, /^## Interface: 16001$/m);
   assert.match(toc, /^## Title: Forever Enhanced Cursor$/m);
   assert.match(toc, /^## Author: Squirt$/m);
-  // Uploaded to CurseForge by hand, with no packager to fill a placeholder
-  // in: the TOC carries the newest released version's number itself.
-  const version = toc.match(/^## Version: (\d+\.\d+\.\d+)$/m)?.[1];
-  assert.ok(version, 'a version number of its own in the TOC');
-  const released = (await read('CHANGELOG.txt')).match(/^## (\d+\.\d+\.\d+)$/m)?.[1];
-  assert.equal(version, released, 'the newest version CHANGELOG.txt has notes for');
+  // Packaged by CurseForge from each version tag on GitHub, which fills the
+  // placeholder in with the tag (the source itself reads "dev").
+  assert.match(toc, /^## Version: @project-version@$/m, 'the packager fills the version in from the tag');
   assert.match(toc, /^## SavedVariables: ForeverEnhancedCursorDB$/m);
   assert.doesNotMatch(toc, /SavedVariablesPerCharacter/, 'account-wide settings only');
   assert.match(toc, /^## IconTexture: Interface\\AddOns\\ForeverEnhancedCursor\\Media\\FECIcon\.tga$/m);

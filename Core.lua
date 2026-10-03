@@ -9,9 +9,9 @@ ns.SLASH_SPARE = "/fecursor" -- in case another addon takes /fec
 ns.MEDIA = "Interface\\AddOns\\" .. ADDON .. "\\Media\\"
 ns.ICON = ns.MEDIA .. "FECIcon.tga"
 
--- The addon's version, from the TOC, where each release writes its number by
--- hand (it's uploaded by hand, with no packager to fill it in); "dev" for a
--- copy whose TOC has no number (none, or a packager's placeholder).
+-- The addon's version, from the TOC, which CurseForge's packager fills in from
+-- each version tag; "dev" for a copy whose TOC has no number (none, or the
+-- packager's placeholder, as in the source itself).
 function ns.Version()
     local get = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
     local version = get and get(ADDON, "Version")
