@@ -304,3 +304,67 @@ function S.TintLook(frame, r, g, b)
     frame.texture:SetVertexColor(r, g, b, 1)
     -- per frame: end
 end
+
+-- The marker on the pointer --------------------------------------------------------------
+-- A shape of the addon's own (Tools/GenerateArt.mjs draws them white, to be
+-- tinted), centred on the cursor's point, or your class's icon as the game
+-- draws it, in its own colours. Size is how big it is across. Never takes
+-- the mouse.
+S.MARKERS = {
+    bullseye = ns.MEDIA .. "MarkerBullseye.tga",
+    crosshair = ns.MEDIA .. "MarkerCrosshair.tga",
+    dot = ns.MEDIA .. "MarkerDot.tga",
+    diamond = ns.MEDIA .. "MarkerDiamond.tga",
+    star = ns.MEDIA .. "MarkerStar.tga",
+}
+-- The game's round class icons, one sheet, cut by CLASS_ICON_TCOORDS.
+S.CLASS_ICONS = "Interface\\TargetingFrame\\UI-Classes-Circles"
+
+-- Your class's icon on the game's sheet (left, right, top, bottom), or nil
+-- if the game doesn't say (no class known yet, a secret, or no table).
+function S.ClassIconCoords()
+    local _, class = UnitClass("player")
+    if type(class) ~= "string" or not Public(class) then return nil end
+    local all = CLASS_ICON_TCOORDS
+    local coords = type(all) == "table" and all[class]
+    if type(coords) ~= "table" then return nil end
+    local left, right, top, bottom = coords[1], coords[2], coords[3], coords[4]
+    if type(left) ~= "number" or type(right) ~= "number" or type(top) ~= "number" or type(bottom) ~= "number" then return nil end
+    return left, right, top, bottom
+end
+
+function S.NewMarker(parent, level)
+    local frame = CreateFrame("Frame", nil, parent)
+    frame:EnableMouse(false)
+    if level then frame:SetFrameLevel(level) end
+    local texture = frame:CreateTexture(nil, "OVERLAY")
+    texture:SetAllPoints()
+    Crisp(texture)
+    frame.texture = texture
+    frame:Hide()
+    return frame
+end
+
+-- Draws it: shape, size across, the tint r, g, b and opacity a. The class
+-- icon keeps its own colours; without the game's icon table it's the Dot.
+-- true if the tint shows (any shape but the class icon).
+function S.PaintMarker(frame, shape, size, r, g, b, a)
+    frame:SetSize(size, size)
+    local texture = frame.texture
+    if shape == "class" then
+        local left, right, top, bottom = S.ClassIconCoords()
+        if left then
+            texture:SetTexture(S.CLASS_ICONS)
+            texture:SetTexCoord(left, right, top, bottom)
+            texture:SetVertexColor(1, 1, 1, a)
+            frame.tinted = false
+            return false
+        end
+        shape = "dot"
+    end
+    texture:SetTexture(S.MARKERS[shape] or S.MARKERS.dot)
+    texture:SetTexCoord(0, 1, 0, 1)
+    texture:SetVertexColor(r, g, b, a)
+    frame.tinted = true
+    return true
+end

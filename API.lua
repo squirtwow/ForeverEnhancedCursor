@@ -9,15 +9,16 @@
 --   ForeverEnhancedCursorAPI.OwnsCursorEffects(kind)   the same for one effect: true for "trail",
 --       "ring" and "cast" (the three EraUI has), false for anything else
 --   ForeverEnhancedCursorAPI.IsShown(kind)             whether an effect is on in the profile showing:
---       kind "trail", "ring", "cast" or "look" (the highlight while looking); false for anything else
+--       kind "trail", "ring", "cast", "look" (the highlight while looking) or "marker" (the marker on
+--       the pointer); false for anything else
 --   ForeverEnhancedCursorAPI.OpenSettings(page)        opens the /fec window, on a page if one is
---       named ("trail", "colours", "rings", "profiles", "autoswitch" or "general"); true if it opened
+--       named ("trail", "colours", "rings", "marker", "profiles", "autoswitch" or "general"); true if it opened
 -- Nothing here changes a setting.
 local _, ns = ...
 
 local api = { version = 1 }
 
-local KINDS = { trail = "trail", ring = "ring", cast = "cast", look = "look" }
+local KINDS = { trail = "trail", ring = "ring", cast = "cast", look = "look", marker = "marker" }
 local OWNED = { trail = true, ring = true, cast = true }
 
 function api.OwnsCursorEffects(kind)

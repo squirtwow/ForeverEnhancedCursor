@@ -1,4 +1,4 @@
--- The preview across the top of the Trail, Colours and Rings pages: the
+-- The preview across the top of the Trail, Colours, Rings and Marker pages: the
 -- game's own pointer loops a figure eight and the profile's effects follow it,
 -- drawn with the same pieces as the real ones (Trail.lua, Style.lua), so
 -- every change shows here at once. A six second loop: moving; then looking
@@ -27,6 +27,7 @@ local FOCUS = {
     ring = { key = "ring", off = "Off: tick Show a ring round the cursor to use it." },
     cast = { key = "cast", off = "Off: tick Show cast progress round the cursor to use it." },
     look = { key = "look", off = "Off: tick Cursor highlight while looking to use it." },
+    marker = { key = "marker", off = "Off: tick Show a marker on the pointer to use it." },
 }
 
 function ns.BuildPreview(window, x, y)
@@ -45,6 +46,7 @@ function ns.BuildPreview(window, x, y)
     local canvas = CreateFrame("Frame", nil, strip)
     canvas:SetAllPoints()
     local trail = ns.Trail.New(canvas, strip)
+    local marker = Style.NewMarker(strip)
     local ring = Style.NewRing(strip)
     local cast = Style.NewCast(strip)
     -- The highlight over the other effects, as on screen.
@@ -60,13 +62,14 @@ function ns.BuildPreview(window, x, y)
     caption:SetPoint("BOTTOMLEFT", 8, 6)
     local cfg = {}
     strip.trail, strip.ring, strip.cast, strip.look, strip.pointer, strip.caption = trail, ring, cast, look, pointer, caption
+    strip.marker = marker
     strip.focus = "trail"
 
     -- Shown as the profile has it; dimmed while off if it's the one in focus.
     local showRing, showCast, showLook, showTrail = false, false, false, false
-    local trailOn, offsetX, offsetY, lookPulse, lookAlpha, ringAlpha = false, 0, 0, false, 1, 1
+    local trailOn, offsetX, offsetY, lookPulse, lookAlpha, ringAlpha, markerAlpha = false, 0, 0, false, 1, 1, 1
     -- Effects coloured as the trail, while its colours flow (as on screen).
-    local tintRing, tintLook, tintCast = false, false, false
+    local tintRing, tintLook, tintCast, tintMarker = false, false, false, false
     -- Where the loop is: looking round, or casting (since castStart).
     local looking, casting, castStart = false, false, 0
     local function Apply()
@@ -83,7 +86,14 @@ function ns.BuildPreview(window, x, y)
         ringAlpha = get("ringAlpha") / 100 * (get("ring") and 1 or DIM)
         Style.PaintRing(ring, get("ringSize"), get("ringThickness"), r, g, b, ringAlpha)
         ring:SetShown(showRing)
+        -- The marker, in a fight or not (Only in combat is for the real one).
+        local markerOn = get("marker")
+        markerAlpha = get("markerAlpha") / 100 * (markerOn and 1 or DIM)
+        r, g, b = Style.EffectColour(get, "marker", trail, now)
+        local tinted = Style.PaintMarker(marker, get("markerShape"), get("markerSize"), r, g, b, markerAlpha)
+        marker:SetShown(markerOn or focus == "marker")
         local flowing = trail.k2 ~= 0
+        tintMarker = flowing and tinted and get("markerColour") == "trail"
         tintRing = flowing and get("ringColour") == "trail"
         tintCast = flowing and get("castColour") == "trail"
         tintLook = flowing and get("lookColour") == "trail"
@@ -140,6 +150,7 @@ function ns.BuildPreview(window, x, y)
         if not looking then
             pointer:SetPoint("TOPLEFT", strip, "BOTTOMLEFT", px, py)
             ring:SetPoint("CENTER", strip, "BOTTOMLEFT", px, py)
+            marker:SetPoint("CENTER", strip, "BOTTOMLEFT", px, py)
             cast:SetPoint("CENTER", strip, "BOTTOMLEFT", px, py)
             if showTrail then trail:Move(px + offsetX, py + offsetY, now) end
         end
@@ -155,9 +166,10 @@ function ns.BuildPreview(window, x, y)
             end
         end
         if looking and lookPulse then look:SetAlpha(lookAlpha * (.75 + .25 * sin(now * 4))) end
-        if tintRing or tintCast or tintLook then
+        if tintRing or tintCast or tintLook or tintMarker then
             local r, g, b = trail:HeadColour(now)
             if tintRing then ring.texture:SetVertexColor(r, g, b, ringAlpha) end
+            if tintMarker then marker.texture:SetVertexColor(r, g, b, markerAlpha) end
             if tintCast then cast.cooldown:SetSwipeColor(r, g, b, 1) end
             if tintLook then Style.TintLook(look, r, g, b) end
         end
@@ -186,7 +198,7 @@ function ns.BuildPreview(window, x, y)
         end
     end
 
-    -- Which effect the page in view is about ("trail", "ring", "cast" or "look").
+    -- Which effect the page in view is about ("trail", "ring", "cast", "look" or "marker").
     function strip:Focus(focus)
         if focus == self.focus then return end
         self.focus = focus

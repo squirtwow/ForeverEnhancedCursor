@@ -217,18 +217,18 @@ test('the tour arrow is a white 32x32 TGA, pointing up', async () => {
 });
 
 // The icon and the minimap glyph, redrawn on purpose in the family's style
-// (2026-10-02): a dark rounded tile with an orange border, an orange pointer
-// with its trail of dots and an orange bar along the foot (128), and the
+// (2026-10-02; recoloured purple, design kept, 2026-10-05): a dark rounded tile with a purple border, a purple pointer
+// with its trail of dots and a purple bar along the foot (128), and the
 // pointer and dots alone on clear (64). Bottom row first, like the heart.
 // Both are final art, pinned below; Tools/GenerateArt.mjs never draws them,
 // so it can't put the old ones back.
-const orange = (data, at) => data[at + 3] > 200 && data[at + 2] > 180 && data[at + 1] > 80 && data[at + 1] < 170 && data[at] < 110;
-function orangeIn(data, size, row) {
+const purple = (data, at) => data[at + 3] > 200 && data[at] > 200 && data[at + 2] > 140 && data[at + 2] < 210 && data[at + 1] > 90 && data[at + 1] < 160; // BGRA: FECM's purple 176, 125, 240
+function purpleIn(data, size, row) {
   let count = 0;
-  for (let col = 0; col < size; col++) if (orange(data, 18 + (row * size + col) * 4)) count++;
+  for (let col = 0; col < size; col++) if (purple(data, 18 + (row * size + col) * 4)) count++;
   return count;
 }
-// The orange in each quarter as the game shows the picture (top row first,
+// The purple in each quarter as the game shows the picture (top row first,
 // whichever way the file keeps its rows), skipping inset pixels round the
 // edge (the icon's border).
 function quarters(data, size, inset) {
@@ -237,7 +237,7 @@ function quarters(data, size, inset) {
   for (let y = inset; y < size - inset; y++) {
     for (let x = inset; x < size - inset; x++) {
       const at = 18 + ((topFirst ? y : size - 1 - y) * size + x) * 4;
-      if (orange(data, at)) q[(y < size / 2 ? 't' : 'b') + (x < size / 2 ? 'l' : 'r')]++;
+      if (purple(data, at)) q[(y < size / 2 ? 't' : 'b') + (x < size / 2 ? 'l' : 'r')]++;
     }
   }
   return q;
@@ -257,19 +257,19 @@ test('the addon icon and minimap glyph are TGAs the game can read, in the family
   let dark = 0, lit = 0;
   for (let at = 18; at < icon.length; at += 4) {
     if (icon[at + 3] === 255 && icon[at] < 40 && icon[at + 1] < 40 && icon[at + 2] < 40) dark++;
-    if (orange(icon, at)) lit++;
+    if (purple(icon, at)) lit++;
   }
   assert.ok(dark > 128 * 128 / 2, 'a dark tile');
-  assert.ok(lit > 500, 'with orange on it');
+  assert.ok(lit > 500, 'with purple on it');
   // The bar along the foot: rows come bottom first, so it's in the first quarter.
-  const bar = Math.max(...[...Array(32).keys()].map(row => orangeIn(icon, 128, row) - orangeIn(icon, 128, 127 - row)));
-  assert.ok(bar >= 25, 'the orange bar at the foot, the right way up');
+  const bar = Math.max(...[...Array(32).keys()].map(row => purpleIn(icon, 128, row) - purpleIn(icon, 128, 127 - row)));
+  assert.ok(bar >= 25, 'the purple bar at the foot, the right way up');
   rightWayRound('FECIcon.tga', quarters(icon, 128, 20));
   const glyph = await tga('MinimapIcon.tga', 64);
   assert.equal(glyph[18 + 3], 0, 'the glyph sits on a clear background');
   let glyphLit = 0;
-  for (let at = 18; at < glyph.length; at += 4) if (orange(glyph, at)) glyphLit++;
-  assert.ok(glyphLit > 200, 'an orange pointer and dots');
+  for (let at = 18; at < glyph.length; at += 4) if (purple(glyph, at)) glyphLit++;
+  assert.ok(glyphLit > 200, 'a purple pointer and dots');
   rightWayRound('MinimapIcon.tga', quarters(glyph, 64, 0));
 });
 
@@ -277,8 +277,8 @@ test('the addon icon and minimap glyph are TGAs the game can read, in the family
 // accident. A redraw on purpose puts its new hashes here.
 test('the addon icon and minimap glyph are the final art', async () => {
   const pinned = {
-    'FECIcon.tga': '2565eed11e7374b41e661118da99c008a97baa6f',
-    'MinimapIcon.tga': '6988dbf39f86d18fa7e2937816eb2da7e308e09b',
+    'FECIcon.tga': '426548b403a3a124512fa873b78127dbf02b390c',
+    'MinimapIcon.tga': '07cbf95dccecd34fc8d876aa72f233920e338b1a',
   };
   for (const [name, sha1] of Object.entries(pinned)) {
     const data = await readFile(new URL(`../Media/${name}`, import.meta.url));
@@ -292,8 +292,8 @@ test('the addon icon and minimap glyph are the final art', async () => {
 // puts its new hash here.
 test("More from Squirt's icons are each addon's own, copied as it ships", async () => {
   const copies = {
-    'FECMIcon.tga': '84cf0b28210ee6212922f8fa74c35e4fffa57124',
-    'FERFIcon.tga': '3e5601b4d7fd8fa301818c8b9675a3ed44f15ad6',
+    'FECMIcon.tga': '4e62d7e24b52be4f41c450c09f8037366c272762',
+    'FERFIcon.tga': '0b6a2e762886f804e0232a0ff2b74755828da5a4',
   };
   const window = await read('Window.lua');
   for (const [name, sha1] of Object.entries(copies)) {
@@ -411,11 +411,11 @@ test('Tools/GenerateShots.mjs draws the two pictures as they ship', async t => {
 });
 
 // Tools/GenerateArt.mjs, run in a scratch folder (its own folder's parent,
-// and the folder it runs in): it draws the trail's dot, the cast ring and the
-// ring atlas exactly as they ship, and nothing else. So it never draws over
-// the icons, the heart or the tour's arrow, nor the old stand-in arrow (the
-// preview draws the game's own pointer).
-test('Tools/GenerateArt.mjs draws only its own three, as they ship', async () => {
+// and the folder it runs in): it draws the trail's dot, the cast ring, the
+// ring atlas and the five cursor markers exactly as they ship, and nothing
+// else. So it never draws over the icons, the heart or the tour's arrow, nor
+// the old stand-in arrow (the preview draws the game's own pointer).
+test('Tools/GenerateArt.mjs draws only its own art, as it ships', async () => {
   const scratch = await mkdtemp(join(tmpdir(), 'fec-art-'));
   try {
     await mkdir(join(scratch, 'Tools'));
@@ -423,8 +423,9 @@ test('Tools/GenerateArt.mjs draws only its own three, as they ship', async () =>
     const script = join(scratch, 'Tools', 'GenerateArt.mjs');
     await copyFile(new URL('GenerateArt.mjs', import.meta.url), script);
     execFileSync(process.execPath, [script], { cwd: scratch, stdio: 'pipe' });
-    const own = ['CastRing.tga', 'Rings.tga', 'TrailDot.tga'];
-    assert.deepEqual((await readdir(join(scratch, 'Media'))).sort(), own, 'only its own three');
+    const own = ['CastRing.tga', 'MarkerBullseye.tga', 'MarkerCrosshair.tga', 'MarkerDiamond.tga', 'MarkerDot.tga',
+      'MarkerStar.tga', 'Rings.tga', 'TrailDot.tga'];
+    assert.deepEqual((await readdir(join(scratch, 'Media'))).sort(), own, 'only its own art');
     assert.deepEqual((await readdir(scratch)).sort(), ['Media', 'Tools'], 'and nothing beside Media');
     assert.deepEqual(await readdir(join(scratch, 'Tools')), ['GenerateArt.mjs'], 'nor beside itself');
     for (const name of own) {

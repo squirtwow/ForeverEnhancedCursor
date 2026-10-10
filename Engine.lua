@@ -1,5 +1,6 @@
--- The effects on screen: the trail, the ring round the cursor and the
--- highlight while looking (cast progress is Cast.lua's, on the same frames).
+-- The effects on screen: the trail, the ring round the cursor, the marker on
+-- the pointer and the highlight while looking (cast progress is Cast.lua's,
+-- on the same frames).
 --
 -- One frame of the addon's own drives them all, over the whole screen, above
 -- the game's windows, never taking the mouse. It runs only while something
@@ -24,7 +25,7 @@ ns.Engine = Engine
 
 local sin = math.sin
 local Cast -- Cast.lua, once started
-local driver, anchor, trail, ring, look
+local driver, anchor, trail, ring, look, marker
 local cfg = {} -- the trail's settings, reused
 local running = false
 -- Settings, read as they change.
@@ -32,8 +33,9 @@ local trailOn, trailCombat, trailAllowed = false, false, false
 local offsetX, offsetY = 0, 0
 local ringOn, ringAlpha = false, 1
 local lookOn, lookRight, lookLeft, lookPulse, lookAlpha = false, true, true, false, .9
+local markerOn, markerCombat, markerAllowed, markerAlpha = false, false, false, 1
 -- Effects coloured as the trail, while its colours flow.
-local tintRing, tintLook, tintCast, tinting = false, false, false, false
+local tintRing, tintLook, tintCast, tintMarker, tinting = false, false, false, false, false
 -- Each frame.
 local lastX, lastY -- where the cursor last was, before any looking round
 local wasLooking, marked = false, false
@@ -57,7 +59,10 @@ function Engine:Build()
     ring:Hide()
     look = Style.NewLook(driver, 102)
     Style.PlaceLook(look, anchor, "CENTER", 0, 0)
-    self.driver, self.anchor, self.trail, self.ring, self.look = driver, anchor, trail, ring, look
+    -- The marker under the rings, centred on the cursor's point.
+    marker = Style.NewMarker(driver, 99)
+    marker:SetPoint("CENTER", anchor, "CENTER", 0, 0)
+    self.driver, self.anchor, self.trail, self.ring, self.look, self.marker = driver, anchor, trail, ring, look, marker
 end
 
 local function Stop()
@@ -114,10 +119,11 @@ local function Update()
         if tintRing then ring.texture:SetVertexColor(r, g, b, ringAlpha) end
         if tintLook then Style.TintLook(look, r, g, b) end
         if tintCast and Cast.state then Cast:Tint(r, g, b) end
+        if tintMarker then marker.texture:SetVertexColor(r, g, b, markerAlpha) end
     end
     if marked and lookPulse then look:SetAlpha(lookAlpha * (.75 + .25 * sin(now * 4))) end
     local casting = Cast.state ~= nil and Cast:Tick(now)
-    if live == 0 and not (ringOn or lookOn or trailAllowed or casting) then Stop() end
+    if live == 0 and not (ringOn or lookOn or trailAllowed or markerAllowed or casting) then Stop() end
     -- per frame: end
 end
 
@@ -125,7 +131,9 @@ end
 function Engine:Gate()
     if not driver then return end
     trailAllowed = trailOn and (not trailCombat or State.combat == true)
-    local need = ringOn or lookOn or trailAllowed or (Cast ~= nil and Cast.state ~= nil) or trail:Count() > 0
+    markerAllowed = markerOn and (not markerCombat or State.combat == true)
+    marker:SetShown(markerAllowed)
+    local need = ringOn or lookOn or trailAllowed or markerAllowed or (Cast ~= nil and Cast.state ~= nil) or trail:Count() > 0
     if need and not running then
         running = true
         driver:Show()
@@ -153,9 +161,10 @@ function Engine:Apply()
     local get = ns.Get
     trailOn, trailCombat = get("trail"), get("trailCombat")
     ringOn, lookOn = get("ring"), get("look")
+    markerOn, markerCombat = get("marker"), get("markerCombat")
     if not driver then
         -- Nothing is made until something is turned on.
-        if not (trailOn or ringOn or lookOn or get("cast")) then return end
+        if not (trailOn or ringOn or lookOn or markerOn or get("cast")) then return end
         self:Build()
     end
     offsetX, offsetY = get("trailX"), get("trailY")
@@ -179,11 +188,15 @@ function Engine:Apply()
         marked = false
         look:Hide()
     end
+    markerAlpha = get("markerAlpha") / 100
+    r, g, b = Style.EffectColour(get, "marker", trail, now)
+    local tinted = Style.PaintMarker(marker, get("markerShape"), get("markerSize"), r, g, b, markerAlpha)
     local flowing = trail.k2 ~= 0
     tintRing = flowing and ringOn and get("ringColour") == "trail"
     tintLook = flowing and lookOn and get("lookColour") == "trail"
     tintCast = flowing and get("cast") and get("castColour") == "trail"
-    tinting = tintRing or tintLook or tintCast
+    tintMarker = flowing and tinted and markerOn and get("markerColour") == "trail"
+    tinting = tintRing or tintLook or tintCast or tintMarker
     if Cast then Cast:Apply() end
     self:Gate()
 end

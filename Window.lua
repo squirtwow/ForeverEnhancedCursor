@@ -1,4 +1,4 @@
--- The /fec window: the pages listed down the left (Trail, Colours and Rings,
+-- The /fec window: the pages listed down the left (Trail, Colours, Rings and Marker,
 -- then Profiles, Auto-switch and General), the chosen page filling the rest,
 -- the preview across the top of the effects' pages, the profile menu in the
 -- header and a footer that explains whatever the mouse is over. Drawn in the
@@ -389,6 +389,8 @@ local PAGES = {
         note = "The trail's colours: your class's, one colour, a rainbow, or a gradient of up to ten of your own." },
     { key = "rings", label = "Rings", preview = true, build = function(...) ns.BuildRingsPage(...) end,
         note = "A ring round the cursor, cast progress round the cursor, and a highlight where it is while you look around." },
+    { key = "marker", label = "Marker", preview = true, needs = "BuildMarkerPage", build = function(...) ns.BuildMarkerPage(...) end,
+        note = "A marker on the pointer: a bullseye, crosshair, dot, diamond, star or your class icon." },
     { rule = true },
     { key = "profiles", label = "Profiles", build = function(...) ns.BuildProfilesPage(...) end,
         note = "Your profile, the account-wide one, and making, copying, sharing and importing profiles." },
@@ -397,6 +399,11 @@ local PAGES = {
     { key = "general", label = "General", build = BuildGeneral,
         note = "The window's accent, Reset, the minimap button, the tour, What's new, the Discord and more from Squirt." },
 }
+-- A page from a file added since the game started only shows after a full
+-- restart (a /reload doesn't load new files): until then it's left out.
+for i = #PAGES, 1, -1 do
+    if PAGES[i].needs and not ns[PAGES[i].needs] then table.remove(PAGES, i) end
+end
 ns.PAGE_KEYS = {}
 local PREVIEWED = {}
 for _, spec in ipairs(PAGES) do

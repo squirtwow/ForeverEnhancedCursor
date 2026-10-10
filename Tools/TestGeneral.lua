@@ -389,7 +389,7 @@ do
     Equal(S[w.profileButton.label].text, "|cff8b8d92Profile|r   " .. MINE, "the header names it")
     Equal(S[w].shown, true, "the window stays open")
     -- Every page and tab draws from the fresh start.
-    for _, view in ipairs({ { "trail" }, { "colours" }, { "rings", "ring" }, { "rings", "cast" }, { "rings", "look" },
+    for _, view in ipairs({ { "trail" }, { "colours" }, { "rings", "ring" }, { "rings", "cast" }, { "rings", "look" }, { "marker" },
         { "profiles" }, { "autoswitch", "rules" }, { "autoswitch", "mounts" }, { "general" } }) do
         w:Select(view[1])
         if view[2] then w.pages[view[1]].tab = view[2]; w:Refresh() end

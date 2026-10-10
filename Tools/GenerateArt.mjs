@@ -1,5 +1,5 @@
-// The effects' art, drawn from scratch: the trail's dot, the cast ring and
-// the ring atlas. Supersampled, uncompressed 32-bit TGA with the origin at
+// The effects' art, drawn from scratch: the trail's dot, the cast ring, the
+// ring atlas and the cursor markers. Supersampled, uncompressed 32-bit TGA with the origin at
 // the top left. The addon's icon and minimap glyph (FECIcon, MinimapIcon) are
 // drawn apart, in the family's style, and this never touches them; the
 // preview draws the game's own pointer, so there's no stand-in arrow either.
@@ -61,4 +61,51 @@ render('Rings', 1024, (x, y) => {
   return r <= 60 && r >= 60 - width ? WHITE : CLEAR;
 });
 
-console.log('Drew TrailDot, CastRing and Rings.');
+// The cursor markers (Style.lua's MARKERS): white on clear, each 128 across
+// with a clear edge, centred, so each is drawn at the size asked for and
+// tinted. The class icon is the game's own, so it isn't drawn here.
+const MID = 64;
+const disc = (x, y, r) => Math.hypot(x - MID, y - MID) <= r;
+const band = (x, y, inner, outer) => {
+  const r = Math.hypot(x - MID, y - MID);
+  return r >= inner && r <= outer;
+};
+
+// Bullseye: two rings and a dot in the middle.
+render('MarkerBullseye', 128, (x, y) =>
+  band(x, y, 50, 60) || band(x, y, 26, 36) || disc(x, y, 11) ? WHITE : CLEAR);
+
+// Crosshair: four lines with a gap round a small dot in the middle.
+render('MarkerCrosshair', 128, (x, y) => {
+  const dx = Math.abs(x - MID), dy = Math.abs(y - MID);
+  const across = dy <= 5 && dx >= 18 && dx <= 60;
+  const down = dx <= 5 && dy >= 18 && dy <= 60;
+  return across || down || disc(x, y, 7) ? WHITE : CLEAR;
+});
+
+// Dot: one filled circle.
+render('MarkerDot', 128, (x, y) => disc(x, y, 60) ? WHITE : CLEAR);
+
+// Diamond: a square on its point, as an outline about 10 pixels thick.
+render('MarkerDiamond', 128, (x, y) => {
+  const d = Math.abs(x - MID) + Math.abs(y - MID);
+  return d >= 46 && d <= 60 ? WHITE : CLEAR;
+});
+
+// Star: five points, filled, the top one straight up.
+const STAR = [];
+for (let i = 0; i < 10; i++) {
+  const angle = -Math.PI / 2 + i * Math.PI / 5;
+  const r = i % 2 === 0 ? 60 : 60 * .4;
+  STAR.push([MID + r * Math.cos(angle), MID + r * Math.sin(angle)]);
+}
+render('MarkerStar', 128, (x, y) => {
+  let inside = false;
+  for (let i = 0, j = STAR.length - 1; i < STAR.length; j = i++) {
+    const [xi, yi] = STAR[i], [xj, yj] = STAR[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside ? WHITE : CLEAR;
+});
+
+console.log('Drew TrailDot, CastRing, Rings and the five cursor markers.');

@@ -74,7 +74,7 @@ local STEPS = {
     {
         version = "1.0.0",
         title = "The menu",
-        text = "Every page is in this list: Trail, Colours and Rings for the effects, then Profiles, Auto-switch and General."
+        text = "Every page is in this list: Trail, Colours, Rings and Marker for the effects, then Profiles, Auto-switch and General."
             .. " Hover anything and the line at the foot of the window says what it does.",
         target = function(w) return w.navFrame end,
         side = "right",

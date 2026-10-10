@@ -24,6 +24,7 @@ Preview.lua
 TrailPage.lua
 ColoursPage.lua
 RingsPage.lua
+MarkerPage.lua
 ProfileTools.lua
 ProfilesPage.lua
 AutoSwitchPage.lua

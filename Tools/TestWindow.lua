@@ -53,16 +53,16 @@ Equal(ns.Get("ringSize") .. " " .. ns.Get("ringThickness") .. " " .. ns.Get("cas
 SlashCmdList.FECURSOR("")
 w = FECursorFrame
 Equal(S[w].shown, true, "/fec opens the window")
-local ORDER = { "trail", "colours", "rings", "profiles", "autoswitch", "general" }
-Equal(table.concat(ns.PAGE_KEYS, " "), table.concat(ORDER, " "), "six pages")
+local ORDER = { "trail", "colours", "rings", "marker", "profiles", "autoswitch", "general" }
+Equal(table.concat(ns.PAGE_KEYS, " "), table.concat(ORDER, " "), "seven pages")
 do
     local labels, tops = {}, {}
     for _, key in ipairs(ORDER) do
         labels[#labels + 1] = S[w.nav[key].label].text
         tops[#tops + 1] = S[w.nav[key]].points[1][3]
     end
-    Equal(table.concat(labels, "|"), "Trail|Colours|Rings|Profiles|Auto-switch|General", "listed down the left")
-    Equal(table.concat(tops, " "), "-12 -44 -76 -120 -152 -184", "the effects' pages, a rule, then Profiles, Auto-switch and General")
+    Equal(table.concat(labels, "|"), "Trail|Colours|Rings|Marker|Profiles|Auto-switch|General", "listed down the left")
+    Equal(table.concat(tops, " "), "-12 -44 -76 -108 -152 -184 -216", "the effects' pages, a rule, then Profiles, Auto-switch and General")
 end
 Equal(w.selected, "trail", "opening on Trail")
 Equal(S[w].strata, "FULLSCREEN_DIALOG", "over the game's own windows")
@@ -147,7 +147,7 @@ do
     end
     local numbers = 0
     for key in pairs(ns.NUMBERS) do if ns.PROFILE_KEYS[key] then numbers = numbers + 1 end end
-    Equal(sliders .. " " .. numbers, "18 18", "every number in a profile has a slider (the minimap's angle is dragged)")
+    Equal(sliders .. " " .. numbers, "20 20", "every number in a profile has a slider (the minimap's angle is dragged)")
     local life = bySetting.trailLife
     life:Choose(.33)
     Equal(ns.Get("trailLife"), .35, "Lifetime in steps of .05 seconds, saved as it shows")
@@ -179,8 +179,8 @@ do
     Equal(table.concat(missing), "", "every button, box, slider and anything else taking the mouse has a note")
     True(#controls >= 60, "all of them checked (" .. #controls .. ")")
     local quiet, tried = {}, {}
-    local views = { { "trail" }, { "colours" }, { "rings", "ring" }, { "rings", "cast" }, { "rings", "look" }, { "profiles" },
-        { "autoswitch", "rules" }, { "autoswitch", "mounts" }, { "general" } }
+    local views = { { "trail" }, { "colours" }, { "rings", "ring" }, { "rings", "cast" }, { "rings", "look" }, { "marker" },
+        { "profiles" }, { "autoswitch", "rules" }, { "autoswitch", "mounts" }, { "general" } }
     for _, view in ipairs(views) do
         w:Select(view[1])
         if view[2] then w.pages[view[1]].tab = view[2]; w:Refresh() end
@@ -235,9 +235,9 @@ do
         local s = S[region]
         return s.kind == "Button" or s.kind == "EditBox" or s.mouse == true
     end
-    local views = { { "trail" }, { "colours" }, { "rings", "ring" }, { "rings", "cast" }, { "rings", "look" }, { "profiles" },
-        { "autoswitch", "rules" }, { "autoswitch", "mounts" }, { "general" } }
-    local PREVIEWED = { trail = true, colours = true, rings = true }
+    local views = { { "trail" }, { "colours" }, { "rings", "ring" }, { "rings", "cast" }, { "rings", "look" }, { "marker" },
+        { "profiles" }, { "autoswitch", "rules" }, { "autoswitch", "mounts" }, { "general" } }
+    local PREVIEWED = { trail = true, colours = true, rings = true, marker = true }
     local problems = {}
     local function Name(region)
         local s = S[region]
@@ -303,6 +303,8 @@ do
     True(mountRow.hint:find("Needs testing", 1, true) ~= nil, "and its note")
     True(mountTab.hint:find("Needs testing", 1, true) ~= nil, "the Mounts tab's note: Needs testing")
     True(H.Find("YOUR MOUNTS (NEEDS TESTING)") ~= nil, "the Mounts tab's heading: Needs testing")
+    -- The Marker page has been seen working in game (2026-10-10), so it
+    -- says it nowhere, as the check below covers.
     -- And nothing else, on any page or tab, shown or in a note.
     local keep = { ["A mount you list (Needs testing)"] = true, ["YOUR MOUNTS (NEEDS TESTING)"] = true }
     local stray = {}

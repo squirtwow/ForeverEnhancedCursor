@@ -194,7 +194,7 @@ function ns.BuildProfilesPage(window, page, width)
     import:SetScript("OnClick", function() box:Open("import") end)
     window:Hint(import, "Paste a profile, see what it changes, then make it a new profile or put it on this one.")
     window.shareImport = import
-    P.Detail(share, "Everything on the Trail, Colours and Rings pages. Not the window's accent, the minimap button or the "
+    P.Detail(share, "Everything on the Trail, Colours, Rings and Marker pages. Not the window's accent, the minimap button or the "
         .. "Auto-switch rules.", L, -48, width - 32)
 
     -- From EraUI: only while EraUI is loaded and its settings can be read.

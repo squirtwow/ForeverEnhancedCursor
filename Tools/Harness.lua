@@ -40,7 +40,7 @@ end
 -- The addon's files, in the TOC's order (Tools/TestRules.mjs checks they match).
 H.FILES = { "Core.lua", "Style.lua", "FromEraUI.lua", "State.lua", "Trail.lua", "Engine.lua", "Cast.lua",
     "AutoSwitch.lua", "API.lua", "Theme.lua", "PageParts.lua", "ColourPicker.lua", "Preview.lua", "TrailPage.lua",
-    "ColoursPage.lua", "RingsPage.lua", "ProfileTools.lua", "ProfilesPage.lua", "AutoSwitchPage.lua", "ProfileMenu.lua",
+    "ColoursPage.lua", "RingsPage.lua", "MarkerPage.lua", "ProfileTools.lua", "ProfilesPage.lua", "AutoSwitchPage.lua", "ProfileMenu.lua",
     "Window.lua", "Tour.lua", "MinimapButton.lua", "Notes.lua" }
 H.ADDON = "ForeverEnhancedCursor"
 
@@ -424,6 +424,11 @@ H.CLASS_COLOURS = {
     DRUID = { r = 1, g = .49, b = .04 }, WARRIOR = { r = .78, g = .61, b = .43 }, MAGE = { r = .25, g = .78, b = .92 },
     PRIEST = { r = 1, g = 1, b = 1 }, ROGUE = { r = 1, g = .96, b = .41 }, PALADIN = { r = .96, g = .55, b = .73 },
 }
+-- Where each class's round icon sits on the game's sheet: left, right, top, bottom.
+H.CLASS_ICONS = {
+    WARRIOR = { 0, .25, 0, .25 }, MAGE = { .25, .49609375, 0, .25 }, ROGUE = { .49609375, .7421875, 0, .25 },
+    DRUID = { .7421875, .98828125, 0, .25 }, PRIEST = { .49609375, .7421875, .25, .5 }, PALADIN = { 0, .25, .5, .75 },
+}
 
 -- EraUI's saved settings (a table), or nil for EraUI not installed. EraUI is
 -- loaded while it has settings, unless loaded says otherwise (its settings
@@ -491,6 +496,8 @@ function H.Environment()
     _G.IsMouselooking = function() return H.mouselook end
     _G.CreateColor = function(r, g, b, a) return { r = r, g = g, b = b, a = a or 1 } end
     _G.RAID_CLASS_COLORS = H.CLASS_COLOURS
+    -- The game's class icon sheet coordinates (a test can take them away).
+    _G.CLASS_ICON_TCOORDS = H.CLASS_ICONS
     _G.wipe = function(t) for k in pairs(t) do t[k] = nil end return t end
     _G.print = function(msg) H.printed[#H.printed + 1] = msg end
     _G.issecretvalue = IsSecret

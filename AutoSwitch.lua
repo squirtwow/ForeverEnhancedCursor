@@ -434,7 +434,7 @@ function A:Reserve()
     local most, any, cast = 0, false, false
     for _, name in ipairs(ns.RuleProfiles()) do
         if get(name, "trail") then most = math.max(most, get(name, "trailMax")) end
-        any = any or get(name, "trail") or get(name, "ring") or get(name, "look") or get(name, "cast")
+        any = any or get(name, "trail") or get(name, "ring") or get(name, "look") or get(name, "cast") or get(name, "marker")
         cast = cast or get(name, "cast")
     end
     if any then ns.Engine:Build() end

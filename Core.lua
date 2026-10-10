@@ -103,6 +103,15 @@ ns.DEFAULTS = {
     lookRight = true, -- while turning with the right mouse button
     lookLeft = true, -- while moving the camera with the left mouse button
     lookPulse = false,
+    -- A marker on the pointer: a shape of the addon's own, tinted, or your
+    -- class's icon as the game draws it.
+    marker = false,
+    markerCombat = false, -- only in combat
+    markerShape = "bullseye",
+    markerSize = 32, -- across, in pixels
+    markerAlpha = 100,
+    markerColour = "class", -- class, custom or the trail's (not the class icon: it keeps its own)
+    markerCustom = "FFFFFF",
 }
 -- The settings a profile holds; the rest are shared.
 ns.PROFILE_KEYS = {
@@ -113,6 +122,8 @@ ns.PROFILE_KEYS = {
     cast = true, castSize = true, castAlpha = true, castColour = true, castCustom = true,
     look = true, lookSize = true, lookAlpha = true, lookColour = true, lookCustom = true, lookRight = true, lookLeft = true,
     lookPulse = true,
+    marker = true, markerCombat = true, markerShape = true, markerSize = true, markerAlpha = true, markerColour = true,
+    markerCustom = true,
 }
 ns.COLOUR_COUNT = 10
 for i = 1, ns.COLOUR_COUNT do ns.PROFILE_KEYS["colour" .. i] = true end
@@ -139,6 +150,8 @@ ns.NUMBERS = {
     castAlpha = { 10, 100, 90 },
     lookSize = { 16, 128, 32 }, -- as the ring's was, so every size saved before still loads
     lookAlpha = { 10, 100, 60 },
+    markerSize = { 12, 96, 32 },
+    markerAlpha = { 10, 100, 100 },
 }
 -- Steps for the sliders: 1 unless listed.
 ns.STEPS = { trailLife = .05, trailMax = 10 }
@@ -146,7 +159,7 @@ ns.STEPS = { trailLife = .05, trailMax = 10 }
 local WHOLE = {}
 for key in pairs(ns.NUMBERS) do WHOLE[key] = key ~= "trailLife" end
 -- Colours: six hex digits.
-local HEX = { ringCustom = true, castCustom = true, lookCustom = true }
+local HEX = { ringCustom = true, castCustom = true, lookCustom = true, markerCustom = true }
 for i = 1, ns.COLOUR_COUNT do HEX["colour" .. i] = true end
 ns.HEX_KEYS = HEX
 -- Choices a text setting may hold, in the order the window offers them.
@@ -154,12 +167,16 @@ ns.ACCENT_KEYS = { "orange", "blue", "teal", "purple", "green" }
 ns.EFFECT_COLOURS = { "class", "custom", "trail" }
 -- The highlight's tint: none first (the game's pointer as it is).
 ns.LOOK_TINTS = { "none", "class", "custom", "trail" }
+-- The marker's shapes, in the order the window offers them.
+ns.MARKER_SHAPES = { "bullseye", "crosshair", "dot", "diamond", "star", "class" }
 ns.CHOICE_KEYS = {
     accent = ns.ACCENT_KEYS,
     colourMode = { "class", "single", "rainbow", "gradient" },
     ringColour = ns.EFFECT_COLOURS,
     castColour = ns.EFFECT_COLOURS,
     lookColour = ns.LOOK_TINTS,
+    markerShape = ns.MARKER_SHAPES,
+    markerColour = ns.EFFECT_COLOURS,
 }
 
 -- Settings taken out before release, dropped from the saved settings at load.

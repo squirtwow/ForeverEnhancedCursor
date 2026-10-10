@@ -2,7 +2,7 @@
 -- EraUI's cursor settings brought over as a profile (offered once).
 --
 -- A share string is "FEC1:" (the format's version) and the profile's own
--- settings (every one on the Trail, Colours and Rings pages, ns.Shareable),
+-- settings (every one on the Trail, Colours, Rings and Marker pages, ns.Shareable),
 -- with its name and the addon's version, packed by the game's own encoder
 -- (C_EncodingUtil: CBOR, then Deflate, then Base64). Never the shared
 -- settings (the window's accent, the minimap button), the Auto-switch rules
@@ -159,6 +159,10 @@ local ORDER = {
     { "lookColour", "Highlight: tint" }, { "lookCustom", "Highlight: custom tint" },
     { "lookRight", "Highlight: right mouse button" }, { "lookLeft", "Highlight: left mouse button" },
     { "lookPulse", "Highlight: pulse gently" },
+    -- Marker
+    { "marker", "Marker" }, { "markerCombat", "Marker: only in combat" }, { "markerShape", "Marker: shape" },
+    { "markerSize", "Marker: size" }, { "markerAlpha", "Marker: opacity" }, { "markerColour", "Marker: colour" },
+    { "markerCustom", "Marker: custom colour" },
 }
 -- The ten colours after Colours.
 for i = ns.COLOUR_COUNT, 1, -1 do table.insert(ORDER, 15, { "colour" .. i, "Colour " .. i }) end
@@ -169,7 +173,7 @@ P.ORDER = ORDER
 local VALUES = {
     class = "Class", single = "One colour", rainbow = "Rainbow", gradient = "Gradient", custom = "Custom", trail = "Trail's",
 }
-local PERCENT = { trailAlpha = true, colourSpeed = true, ringAlpha = true, castAlpha = true, lookAlpha = true }
+local PERCENT = { trailAlpha = true, colourSpeed = true, ringAlpha = true, castAlpha = true, lookAlpha = true, markerAlpha = true }
 local SECONDS = { trailLife = true }
 
 -- A setting with no name here yet: its key in words ("dotSize": "Dot size").
@@ -192,6 +196,7 @@ function P.Value(key, value)
     end
     value = tostring(value)
     if ns.HEX_KEYS[key] then return "#" .. value end
+    if key == "markerShape" and value == "class" then return "Class icon" end
     return VALUES[value] or Words(value)
 end
 
