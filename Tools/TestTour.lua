@@ -344,27 +344,27 @@ end
     end)
 end)()
 
--- A released copy (1.0.0 here): the packager writes the tag into the TOC, the
+-- A released copy (1.0.1 here): the packager writes the tag into the TOC, the
 -- game reads it, and What's new, the footer and What's new's tour go by it. A
 -- tester's copy straight from the source has no number ("dev").
 do
     H.Environment()
-    local number = "1.0.0"
+    local number = "1.0.1"
     _G.C_AddOns.GetAddOnMetadata = function(name, field)
         if name == H.ADDON and field == "Version" then return number end
     end
     ns = H.Load({ notesSeen = "dev" })
-    Equal(ns.Version() .. " " .. ns.NOTES[1].version, "1.0.0 1.0.0", "read as the game reads it, the newest notes its own")
+    Equal(ns.Version() .. " " .. ns.NOTES[1].version, "1.0.1 1.0.1", "read as the game reads it, the newest notes its own")
     H.Advance(2)
     local notes = FECursorNotes
     Equal(notes ~= nil and Shown(notes), true, "What's new shows once, a moment after the login")
-    Equal(S[notes.version].text .. " | " .. tostring(ns.NotesSeen()), "Version 1.0.0 | 1.0.0", "headed 1.0.0, and noted as seen")
+    Equal(S[notes.version].text .. " | " .. tostring(ns.NotesSeen()), "Version 1.0.1 | 1.0.1", "headed 1.0.1, and noted as seen")
     notes.done:Click()
     SlashCmdList.FECURSOR("")
     w = FECursorFrame
-    Equal(S[w.versionText].text, "v1.0.0   /fec to open", "the footer's version")
+    Equal(S[w.versionText].text, "v1.0.1   /fec to open", "the footer's version")
     Equal(#ns.Tour:News(ns.Version()) .. " " .. #ns.Tour:News("dev") .. " " .. #ns.Tour:News("0.9.0"), "0 0 7",
-        "What's new's tour: nothing new for 1.0.0 or a tester's copy, the basics since an older version")
+        "What's new's tour: nothing new for 1.0.1 or a tester's copy, the basics since an older version")
     Clean("the released copy")
 end
 

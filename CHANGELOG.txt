@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1
+
+### Cursor effects
+- New: Cursor marker: a bullseye, crosshair, dot, diamond, star or your class icon on your pointer, sized and coloured as you like.
+
+### Look
+- A new purple logo, same design.
+
 ## 1.0.0
 
 ### Cursor effects

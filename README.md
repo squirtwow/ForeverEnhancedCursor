@@ -19,6 +19,9 @@ ones you like in `/fec`.
   colour of your own or the trail's
 - **Cast ring**: fills as you cast and drains as you channel, sitting just
   outside the cursor ring
+- **Cursor marker**: a bullseye, crosshair, dot, diamond, star or your class
+  icon on your pointer, any size and opacity, in your class colour, a colour
+  of your own or the trail's, with Only in combat
 - **Cursor highlight while looking**: the game hides the cursor while you turn
   or move the camera; a see-through copy of its pointer marks where it will
   come back, fingertip on the spot. On its own switch, any size and opacity,

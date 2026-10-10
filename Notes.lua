@@ -9,6 +9,17 @@ local T = ns.Theme
 -- Notes waiting for their version number are "Unreleased".
 ns.NOTES = {
     {
+        version = "1.0.1",
+        sections = {
+            { "Cursor effects", {
+                "New: Cursor marker: a bullseye, crosshair, dot, diamond, star or your class icon on your pointer, sized and coloured as you like.",
+            } },
+            { "Look", {
+                "A new purple logo, same design.",
+            } },
+        },
+    },
+    {
         version = "1.0.0",
         sections = {
             { "Cursor effects", {
